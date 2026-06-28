@@ -1,0 +1,78 @@
+import React from 'react';
+
+export const PopularActors: React.FC = () => {
+  const actors = [
+    {
+      id: 1,
+      name: 'Name',
+      image: new URL('../assets/actors/Ellipse 3.png', import.meta.url).href,
+      role: 'Actors Details',
+    },
+    {
+      id: 2,
+      name: 'Name',
+      image: new URL('../assets/actors/Ellipse 4.png', import.meta.url).href,
+      role: 'Actors Details',
+    },
+    {
+      id: 3,
+      name: 'Name',
+      image: new URL('../assets/actors/Ellipse 5.png', import.meta.url).href,
+      role: 'Actors Details',
+    },
+    {
+      id: 4,
+      name: 'Name',
+      image: new URL('../assets/actors/Ellipse 6.png', import.meta.url).href,
+      role: 'Actors Details',
+    },
+    {
+      id: 5,
+      name: 'Name',
+      image: new URL('../assets/actors/Ellipse 6-1.png', import.meta.url).href,
+      role: 'Actors Details',
+    },
+  ];
+
+  return (
+    <section className="py-12 md:py-16 px-6 md:px-12 lg:px-24 bg-[#0d0d0d]">
+      <div className="max-w-7xl mx-auto flex flex-col gap-6 md:gap-8">
+        {/* Title Bar */}
+        <div className="flex items-center justify-between">
+          <h2 className="section-title">Popular Actors</h2>
+          
+          <button className="bg-primary hover:bg-primary/95 text-white font-semibold px-5 py-2.5 rounded-full text-xs md:text-sm tracking-wide transition-all duration-200 hover:scale-105 shadow-sm shadow-primary/10">
+            See more
+          </button>
+        </div>
+
+        {/* Actors Row */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:gap-8 justify-items-center">
+          {actors.map((actor) => (
+            <div key={actor.id} className="flex flex-col items-center text-center group">
+              {/* Circular Avatar */}
+              <div className="actor-circle w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mb-4">
+                <img
+                  src={actor.image}
+                  alt={actor.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+              
+              {/* Actor Info */}
+              <h3 className="text-white font-bold text-sm sm:text-base line-clamp-1 group-hover:text-primary transition-colors duration-200">
+                {actor.name}
+              </h3>
+              <p className="text-gray-400 text-xs sm:text-sm font-medium mt-1">
+                {actor.role}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default PopularActors;

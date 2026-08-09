@@ -23,7 +23,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   trailerUrl,
 }) => {
   const [showTrailer, setShowTrailer] = useState(false);
-  const hoverTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const videoId = getYouTubeVideoId(trailerUrl);
 
   useEffect(() => () => clearTimeout(hoverTimeout.current), []);

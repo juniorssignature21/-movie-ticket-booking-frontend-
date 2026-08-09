@@ -62,6 +62,15 @@ export const Footer: React.FC = () => {
             <p className="text-gray-500 text-xs sm:text-sm max-w-xs mt-2 leading-relaxed">
               Your ultimate gateway to the best of Nollywood and international blockbusters. Book cinema seats easily.
             </p>
+            <div className="flex flex-col gap-1.5 text-gray-500 text-xs sm:text-sm mt-1">
+              <p>10 Factory Rd, Aba, Abia State, Nigeria</p>
+              <a href="tel:+2349150391829" className="hover:text-primary transition-colors">
+                Careline: 0915 039 1829
+              </a>
+              <a href="tel:+2347040748233" className="hover:text-primary transition-colors">
+                Adverts &amp; Marketing: 0704 074 8233
+              </a>
+            </div>
           </div>
 
           {/* Links Columns */}

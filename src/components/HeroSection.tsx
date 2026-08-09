@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Play } from 'lucide-react';
 import banner from '../assets/banner.png';
 
@@ -34,16 +35,22 @@ export const HeroSection: React.FC = () => {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-2 w-full sm:w-auto">
-          <button className="bg-primary hover:bg-primary/95 text-white font-bold px-8 py-4 rounded-full text-base tracking-wide transition-all duration-200 shadow-lg shadow-primary/20 hover:scale-105">
+          <Link
+            to="/movies"
+            className="bg-primary hover:bg-primary/95 text-white font-bold px-8 py-4 rounded-full text-base tracking-wide transition-all duration-200 shadow-lg shadow-primary/20 hover:scale-105 text-center"
+          >
             Book a Movie Now
-          </button>
-          
-          <button className="flex items-center justify-center gap-2 text-white hover:text-primary px-6 py-4 rounded-full text-base font-semibold border border-white/10 hover:border-primary/30 bg-white/5 hover:bg-white/10 transition-all duration-200 group">
+          </Link>
+
+          <Link
+            to="/movies"
+            className="flex items-center justify-center gap-2 text-white hover:text-primary px-6 py-4 rounded-full text-base font-semibold border border-white/10 hover:border-primary/30 bg-white/5 hover:bg-white/10 transition-all duration-200 group"
+          >
             <span className="bg-white/10 group-hover:bg-primary/20 p-1.5 rounded-full transition-colors duration-200">
               <Play size={16} className="fill-white text-white group-hover:fill-primary group-hover:text-primary transition-colors" />
             </span>
             <span>Watch thriller</span>
-          </button>
+          </Link>
         </div>
       </div>
       

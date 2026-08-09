@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Star } from 'lucide-react';
+import { getYouTubeEmbedUrl, getYouTubeVideoId } from '../lib/youtube';
 
 export interface MovieCardProps {
   id: string | number;
@@ -9,6 +10,7 @@ export interface MovieCardProps {
   rating: number;
   rank?: number;
   showAvailability?: boolean;
+  trailerUrl?: string;
 }
 
 export const MovieCard: React.FC<MovieCardProps> = ({
@@ -18,9 +20,26 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   rating,
   rank,
   showAvailability = false,
+  trailerUrl,
 }) => {
+  const [showTrailer, setShowTrailer] = useState(false);
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const videoId = getYouTubeVideoId(trailerUrl);
+
+  useEffect(() => () => clearTimeout(hoverTimeout.current), []);
+
+  const handleMouseEnter = () => {
+    if (!videoId) return;
+    hoverTimeout.current = setTimeout(() => setShowTrailer(true), 400);
+  };
+
+  const handleMouseLeave = () => {
+    clearTimeout(hoverTimeout.current);
+    setShowTrailer(false);
+  };
+
   return (
-    <div className="flex flex-col w-full group">
+    <div className="flex flex-col w-full group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {/* Poster Container */}
       <div className="movie-card aspect-[2/3] relative">
         <img
@@ -29,7 +48,17 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
         />
-        
+
+        {videoId && showTrailer && (
+          <iframe
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            src={getYouTubeEmbedUrl(videoId)}
+            title={`${title} trailer`}
+            allow="autoplay; encrypted-media"
+            frameBorder={0}
+          />
+        )}
+
         {/* Dark Gradient Overlay at the bottom of the poster */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
         

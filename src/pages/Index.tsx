@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
 import StatsSection from '../components/StatsSection';
@@ -9,43 +9,33 @@ import DiscountOffers from '../components/DiscountOffers';
 import NollyGist from '../components/NollyGist';
 import AppDownload from '../components/AppDownload';
 import Footer from '../components/Footer';
+import { fetchMovies } from '../api/movies';
+import type { MovieListItem } from '../types/movie';
+
+function toGridMovies(movies: MovieListItem[]) {
+  return movies.map((m) => ({
+    id: m.id,
+    slug: m.slug,
+    title: m.title,
+    image: m.poster_url,
+    year: new Date(m.release_date).getFullYear(),
+    rating: parseFloat(m.average_rating),
+    trailerUrl: m.trailer_url,
+  }));
+}
 
 export const Index: React.FC = () => {
-  // Mock data for New Releases (6 items matching the spec: "Movie Name", year 2002, rating 4.6)
-  const newReleaseImages = [
-    new URL('../assets/new-releases/Rectangle 16.png', import.meta.url).href,
-    new URL('../assets/new-releases/Rectangle 17.png', import.meta.url).href,
-    new URL('../assets/new-releases/Rectangle 35.png', import.meta.url).href,
-    new URL('../assets/new-releases/Rectangle 36.png', import.meta.url).href,
-    new URL('../assets/new-releases/Rectangle 37.png', import.meta.url).href,
-    new URL('../assets/new-releases/Rectangle 38.png', import.meta.url).href,
-  ];
+  const [newReleases, setNewReleases] = useState<ReturnType<typeof toGridMovies>>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<ReturnType<typeof toGridMovies>>([]);
 
-  const newReleases = Array.from({ length: 6 }, (_, index) => ({
-    id: `new-${index + 1}`,
-    title: 'Movie Name',
-    image: newReleaseImages[index],
-    year: 2002,
-    rating: 4.6,
-  }));
-
-  // Mock data for Upcoming (6 items, styled in a similar high-quality format)
-  const upcomingImages = [
-    new URL('../assets/upcoming/Rectangle 35.png', import.meta.url).href,
-    new URL('../assets/upcoming/Rectangle 38.png', import.meta.url).href,
-    new URL('../assets/upcoming/Rectangle 39.png', import.meta.url).href,
-    new URL('../assets/upcoming/Rectangle 40.png', import.meta.url).href,
-    new URL('../assets/upcoming/Rectangle 41.png', import.meta.url).href,
-    new URL('../assets/upcoming/Rectangle 42.png', import.meta.url).href,
-  ];
-
-  const upcomingMovies = Array.from({ length: 6 }, (_, index) => ({
-    id: `upcoming-${index + 1}`,
-    title: 'Movie Name',
-    image: upcomingImages[index],
-    year: 2002,
-    rating: 4.6,
-  }));
+  useEffect(() => {
+    fetchMovies({ status: 'now_showing', ordering: '-release_date' }).then((data) =>
+      setNewReleases(toGridMovies(data.results)),
+    );
+    fetchMovies({ status: 'upcoming', ordering: '-release_date' }).then((data) =>
+      setUpcomingMovies(toGridMovies(data.results)),
+    );
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0d0d0d] text-white flex flex-col">
@@ -64,10 +54,10 @@ export const Index: React.FC = () => {
         <TrendingSection />
 
         {/* 5. New Release movie grid */}
-        <MovieGrid title="New Release" movies={newReleases} />
+        {newReleases.length > 0 && <MovieGrid title="New Release" movies={newReleases} />}
 
         {/* 6. Upcoming movie grid */}
-        <MovieGrid title="Upcoming" movies={upcomingMovies} />
+        {upcomingMovies.length > 0 && <MovieGrid title="Upcoming" movies={upcomingMovies} seeMoreTo="/movies" />}
 
         {/* 7. Popular actors row */}
         <PopularActors />

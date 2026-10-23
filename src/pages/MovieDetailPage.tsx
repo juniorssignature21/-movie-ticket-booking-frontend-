@@ -4,9 +4,11 @@ import { Star, Clock, Calendar } from 'lucide-react';
 import PageShell from '../components/PageShell';
 import { fetchMovie } from '../api/movies';
 import { fetchShowtimesForMovie } from '../api/cinemas';
+import { fetchTheaters } from '../api/cinemas';
 import { useAuth } from '../context/AuthContext';
 import type { MovieDetail } from '../types/movie';
 import type { Showtime } from '../types/cinema';
+import type { Theater } from '../types/cinema';
 
 function nextNDays(n: number) {
   return Array.from({ length: n }, (_, i) => {
@@ -24,9 +26,13 @@ export const MovieDetailPage: React.FC = () => {
   const [movie, setMovie] = useState<MovieDetail | null>(null);
   const [showtimes, setShowtimes] = useState<Showtime[]>([]);
   const [selectedDate, setSelectedDate] = useState(0);
+  const [theaters, setTheaters] = useState<Theater[]>([]);
+  const [selectedCity, setSelectedCity] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   const days = useMemo(() => nextNDays(7), []);
+
+  useEffect(() => { fetchTheaters().then(setTheaters).catch(() => setTheaters([])); }, []);
 
   useEffect(() => {
     if (!slug) return;
@@ -39,8 +45,8 @@ export const MovieDetailPage: React.FC = () => {
   useEffect(() => {
     if (!slug) return;
     const dateStr = days[selectedDate].toISOString().slice(0, 10);
-    fetchShowtimesForMovie(slug, { date: dateStr }).then(setShowtimes);
-  }, [slug, selectedDate, days]);
+    fetchShowtimesForMovie(slug, { date: dateStr, city: selectedCity || undefined }).then(setShowtimes);
+  }, [slug, selectedDate, days, selectedCity]);
 
   const handleSelectShowtime = (showtimeId: number) => {
     if (!isAuthenticated) {
@@ -143,6 +149,12 @@ export const MovieDetailPage: React.FC = () => {
         {/* Showtimes */}
         <div className="mt-12 max-w-7xl mx-auto pb-16">
           <h2 className="section-title mb-6">Showtimes</h2>
+
+          {theaters.length > 0 && <label className="block mb-4 text-sm text-gray-300">City
+            <select value={selectedCity} onChange={e => setSelectedCity(e.target.value)} className="ml-3 bg-card border border-white/10 rounded-lg px-3 py-2 text-white">
+              <option value="">All cities</option>{Array.from(new Set(theaters.map(t => t.city))).sort().map(city => <option key={city} value={city}>{city}</option>)}
+            </select>
+          </label>}
 
           <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-4">
             {days.map((d, idx) => (

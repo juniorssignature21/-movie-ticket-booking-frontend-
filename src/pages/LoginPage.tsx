@@ -77,6 +77,7 @@ export const LoginPage: React.FC = () => {
             Sign up
           </Link>
         </p>
+        <p className="text-center mt-3"><Link to="/password/forgot" className="text-primary text-sm hover:underline">Forgot your password?</Link></p>
       </div>
     </PageShell>
   );

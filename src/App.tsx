@@ -14,6 +14,8 @@ import AdminMovieFormPage from './pages/AdminMovieFormPage';
 import FrontDeskPage from './pages/FrontDeskPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import StaffRoute from './components/StaffRoute';
+import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
+import BlogPostPage from './pages/BlogPostPage';
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
       <Route path="/movies/:slug" element={<MovieDetailPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
+      <Route path="/password/forgot" element={<PasswordRecoveryPage />} />
+      <Route path="/reset-password" element={<PasswordRecoveryPage reset />} />
+      <Route path="/blog/:slug" element={<BlogPostPage />} />
       <Route
         path="/showtimes/:showtimeId/seats"
         element={

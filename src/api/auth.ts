@@ -24,3 +24,13 @@ export async function updateMe(payload: Partial<User>): Promise<User> {
   const { data } = await apiClient.patch('/auth/me/', payload);
   return data;
 }
+
+export async function forgotPassword(email: string): Promise<{ detail: string }> {
+  const { data } = await apiClient.post('/auth/password/forgot/', { email });
+  return data;
+}
+
+export async function resetPassword(payload: { uid: string; token: string; new_password: string }): Promise<{ detail: string }> {
+  const { data } = await apiClient.post('/auth/password/reset/', payload);
+  return data;
+}

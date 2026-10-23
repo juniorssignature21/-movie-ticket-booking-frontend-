@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchBlogPosts } from '../api/content';
+import { Link } from 'react-router-dom';
 import type { BlogPostListItem } from '../types/content';
 
 export const NollyGist: React.FC = () => {
@@ -30,8 +31,9 @@ export const NollyGist: React.FC = () => {
         {/* 2-Column Layout of Blog Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {posts.map((post) => (
-            <div
+            <Link
               key={post.id}
+              to={`/blog/${post.slug}`}
               className="flex flex-col bg-card border border-white/5 rounded-2xl overflow-hidden group hover:border-primary/20 transition-all duration-300"
             >
               {/* Blog Image */}
@@ -71,7 +73,7 @@ export const NollyGist: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -87,6 +87,14 @@ export const MyBookingsPage: React.FC = () => {
                         </button>
                       )}
                     </div>
+                    {booking.status === 'confirmed' && (
+                      <div className="flex items-center gap-3 border-t border-white/5 pt-3">
+                        <img src={booking.qr_code} alt={`Ticket QR code for booking ${booking.reference}`} className="w-24 h-24 bg-white rounded-lg p-1" />
+                        <p className="text-gray-400 text-sm">
+                          {booking.is_used ? 'Ticket already used' : 'Show this QR code at the frontdesk.'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

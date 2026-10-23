@@ -46,6 +46,11 @@ export const BookingCallbackPage: React.FC = () => {
                 Your seats for <span className="text-white font-semibold">{booking.showtime.movie_title}</span> are
                 booked. Reference: <span className="text-white font-mono">{booking.reference}</span>
               </p>
+              <img
+                src={booking.qr_code}
+                alt={`Ticket QR code for booking ${booking.reference}`}
+                className="w-40 h-40 bg-white rounded-xl p-2"
+              />
             </>
           ) : (
             <>

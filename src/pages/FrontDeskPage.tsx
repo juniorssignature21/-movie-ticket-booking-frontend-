@@ -151,6 +151,11 @@ export const FrontDeskPage: React.FC = () => {
               {completedBooking.seats.length} seat(s) · ₦{Number(completedBooking.total_amount).toLocaleString()}
             </p>
             <p className="text-white font-mono text-sm">{completedBooking.reference}</p>
+            <img
+              src={completedBooking.qr_code}
+              alt={`Ticket QR code for booking ${completedBooking.reference}`}
+              className="w-40 h-40 bg-white rounded-xl p-2"
+            />
             <button
               onClick={resetForm}
               className="bg-primary hover:bg-primary/95 text-white font-bold px-8 py-3 rounded-full text-sm tracking-wide transition-all duration-200 mt-4"

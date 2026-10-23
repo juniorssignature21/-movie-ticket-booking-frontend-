@@ -22,10 +22,12 @@ export interface Booking {
   seats: BookingSeat[];
   payment: Payment | null;
   status: BookingStatus;
+  is_used: boolean;
   total_amount: string;
   created_at: string;
   customer_email: string;
   customer_name: string;
+  qr_code: string;
   ticket_valid?: boolean;
 }
 

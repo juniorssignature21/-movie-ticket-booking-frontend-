@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import { forgotPassword, resetPassword } from '../api/auth';
@@ -12,7 +13,7 @@ export const PasswordRecoveryPage: React.FC<{ reset?: boolean }> = ({ reset = fa
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const submit = async (event: React.FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault(); setBusy(true); setError(''); setMessage('');
     try {
       const result = reset

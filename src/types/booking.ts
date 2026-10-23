@@ -26,6 +26,7 @@ export interface Booking {
   created_at: string;
   customer_email: string;
   customer_name: string;
+  ticket_valid?: boolean;
 }
 
 export interface BookingWithPayment extends Booking {

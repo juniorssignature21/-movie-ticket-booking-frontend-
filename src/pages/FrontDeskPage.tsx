@@ -3,7 +3,11 @@ import { CheckCircle2 } from 'lucide-react';
 import PageShell from '../components/PageShell';
 import { fetchMovies } from '../api/movies';
 import { fetchShowtimesForMovie, fetchShowtimeSeats } from '../api/cinemas';
-import { createFrontdeskBooking } from '../api/bookings';
+import {
+  createFrontdeskBooking,
+  fetchFrontdeskBookings,
+  verifyFrontdeskBooking,
+} from '../api/bookings';
 import { getApiErrorMessage } from '../api/client';
 import type { MovieListItem } from '../types/movie';
 import type { Seat, Showtime } from '../types/cinema';
@@ -33,9 +37,19 @@ export const FrontDeskPage: React.FC = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedBooking, setCompletedBooking] = useState<Booking | null>(null);
+  const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
+  const [verificationReference, setVerificationReference] = useState('');
+  const [verifiedBooking, setVerifiedBooking] = useState<Booking | null>(null);
+  const [verificationError, setVerificationError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
-    fetchMovies({ status: 'now_showing', page_size: 50 }).then((data) => setMovies(data.results));
+    fetchMovies({ status: 'now_showing', page_size: 50 })
+      .then((data) => setMovies(data.results))
+      .catch((err) => setError(getApiErrorMessage(err, 'Could not load movies.')));
+    fetchFrontdeskBookings()
+      .then((data) => setRecentBookings(data.results))
+      .catch((err) => setError(getApiErrorMessage(err, 'Could not load recent bookings.')));
   }, []);
 
   useEffect(() => {
@@ -101,11 +115,27 @@ export const FrontDeskPage: React.FC = () => {
         customer_last_name: lastName,
         payment_method: paymentMethod,
       });
+      setRecentBookings((current) => [booking, ...current]);
       setCompletedBooking(booking);
     } catch (err) {
       setError(getApiErrorMessage(err, 'Could not complete this booking.'));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleVerifyBooking = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsVerifying(true);
+    setVerificationError('');
+    setVerifiedBooking(null);
+    try {
+      const booking = await verifyFrontdeskBooking(verificationReference.trim());
+      setVerifiedBooking(booking);
+    } catch (err) {
+      setVerificationError(getApiErrorMessage(err, 'Could not verify this booking.'));
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -137,7 +167,56 @@ export const FrontDeskPage: React.FC = () => {
     <PageShell>
       <div className="px-6 md:px-12 lg:px-24 py-6 pb-16">
         <div className="max-w-3xl mx-auto flex flex-col gap-8">
-          <h1 className="section-title">Front Desk — Book Onsite</h1>
+          <div>
+            <h1 className="section-title">Frontdesk</h1>
+            <p className="text-gray-400 mt-3">Verify tickets and create bookings for walk-in customers.</p>
+          </div>
+
+          <section className="bg-card border border-white/5 rounded-2xl p-6 flex flex-col gap-4">
+            <h2 className="text-white font-bold">Verify a booking</h2>
+            <form onSubmit={handleVerifyBooking} className="flex flex-col sm:flex-row gap-3">
+              <input
+                value={verificationReference}
+                onChange={(event) => setVerificationReference(event.target.value)}
+                className="input flex-1"
+                placeholder="Booking reference"
+                required
+              />
+              <button disabled={isVerifying} className="bg-primary text-white font-bold px-6 py-3 rounded-xl disabled:opacity-60">
+                {isVerifying ? 'Checking...' : 'Verify ticket'}
+              </button>
+            </form>
+            {verificationError && <p role="alert" className="text-red-400 text-sm">{verificationError}</p>}
+            {verifiedBooking && (
+              <div className={`rounded-xl border p-4 ${verifiedBooking.ticket_valid ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-amber-500/40 bg-amber-500/10'}`}>
+                <p className={`font-bold ${verifiedBooking.ticket_valid ? 'text-emerald-300' : 'text-amber-300'}`}>
+                  {verifiedBooking.ticket_valid ? 'Valid ticket' : 'Not valid for entry'}
+                </p>
+                <p className="text-sm text-gray-300 mt-1">
+                  {verifiedBooking.customer_name} · {verifiedBooking.showtime.movie_title} · {verifiedBooking.status}
+                  {verifiedBooking.payment ? ` · payment ${verifiedBooking.payment.status}` : ' · no payment recorded'}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">{verifiedBooking.reference}</p>
+              </div>
+            )}
+            {recentBookings.length > 0 && (
+              <div className="flex flex-col gap-2 border-t border-white/10 pt-4">
+                <p className="text-xs uppercase tracking-wide text-gray-500">Recent bookings</p>
+                {recentBookings.slice(0, 5).map((booking) => (
+                  <button
+                    key={booking.reference}
+                    type="button"
+                    onClick={() => setVerificationReference(booking.reference)}
+                    className="text-left text-sm text-gray-300 hover:text-white"
+                  >
+                    {booking.customer_name} · {booking.reference} · {booking.status}
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <h2 className="text-xl font-bold text-white">Create an onsite booking</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">

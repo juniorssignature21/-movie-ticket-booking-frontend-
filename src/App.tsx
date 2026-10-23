@@ -10,10 +10,12 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminMoviesPage from './pages/AdminMoviesPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminMovieFormPage from './pages/AdminMovieFormPage';
 import FrontDeskPage from './pages/FrontDeskPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import StaffRoute from './components/StaffRoute';
+import SuperAdminRoute from './components/SuperAdminRoute';
 import PasswordRecoveryPage from './pages/PasswordRecoveryPage';
 import BlogPostPage from './pages/BlogPostPage';
 
@@ -62,27 +64,35 @@ function App() {
         }
       />
       <Route
+        path="/admin/dashboard"
+        element={
+          <SuperAdminRoute>
+            <AdminDashboardPage />
+          </SuperAdminRoute>
+        }
+      />
+      <Route
         path="/admin/movies"
         element={
-          <StaffRoute>
+          <SuperAdminRoute>
             <AdminMoviesPage />
-          </StaffRoute>
+          </SuperAdminRoute>
         }
       />
       <Route
         path="/admin/movies/new"
         element={
-          <StaffRoute>
+          <SuperAdminRoute>
             <AdminMovieFormPage />
-          </StaffRoute>
+          </SuperAdminRoute>
         }
       />
       <Route
         path="/admin/movies/:slug/edit"
         element={
-          <StaffRoute>
+          <SuperAdminRoute>
             <AdminMovieFormPage />
-          </StaffRoute>
+          </SuperAdminRoute>
         }
       />
       <Route

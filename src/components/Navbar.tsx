@@ -13,12 +13,15 @@ export const Navbar: React.FC = () => {
     { label: 'Movies', to: '/movies' },
     { label: 'Tickets', to: '/bookings' },
     { label: 'Offers', to: '/movies' },
-    ...(user?.is_staff
+    ...(user?.role === 'superadmin'
       ? [
-          { label: 'Admin', to: '/admin/movies' },
+          { label: 'Admin Dashboard', to: '/admin/dashboard' },
+          { label: 'Manage Movies', to: '/admin/movies' },
           { label: 'Front Desk', to: '/frontdesk' },
         ]
-      : []),
+      : user?.role === 'frontdesk'
+        ? [{ label: 'Front Desk', to: '/frontdesk' }]
+        : []),
   ];
 
   const handleLogout = async () => {

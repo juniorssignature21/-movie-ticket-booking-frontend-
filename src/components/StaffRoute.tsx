@@ -13,7 +13,7 @@ export const StaffRoute: React.FC<{ children: React.ReactNode }> = ({ children }
     );
   }
 
-  if (!isAuthenticated || !user?.is_staff) {
+  if (!isAuthenticated || !user || (user.role !== 'frontdesk' && user.role !== 'superadmin')) {
     return <Navigate to="/" replace />;
   }
 

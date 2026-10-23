@@ -5,6 +5,7 @@ export interface User {
   last_name: string;
   phone_number: string;
   is_staff: boolean;
+  role: 'superadmin' | 'frontdesk' | 'customer';
 }
 
 export interface AuthTokens {

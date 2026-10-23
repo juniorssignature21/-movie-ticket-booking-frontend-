@@ -12,6 +12,16 @@ export async function createFrontdeskBooking(payload: FrontdeskBookingPayload): 
   return data;
 }
 
+export async function fetchFrontdeskBookings(): Promise<Paginated<Booking>> {
+  const { data } = await apiClient.get('/frontdesk/bookings/', { params: { page_size: 50 } });
+  return data;
+}
+
+export async function verifyFrontdeskBooking(reference: string): Promise<Booking> {
+  const { data } = await apiClient.post(`/frontdesk/bookings/${encodeURIComponent(reference)}/verify/`);
+  return data;
+}
+
 export async function fetchMyBookings(): Promise<Paginated<Booking>> {
   const { data } = await apiClient.get('/bookings/');
   return data;
